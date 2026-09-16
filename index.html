@@ -2,42 +2,87 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MeetAbroad - Free Dating</title>
+<title>MeetAbroad - 100% FREE - No Payment Ever</title>
 <style>
-body{font-family:Arial;background:#111;color:white;margin:0;text-align:center}
-.card{width:90%;max-width:350px;height:500px;background:white;color:black;border-radius:20px;margin:20px auto;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(255,0,80,0.5)}
-.card img{width:100%;height:70%;object-fit:cover}
-.info{padding:15px;text-align:left}
-.badge{background:#ff2d55;color:white;padding:5px 10px;border-radius:10px;font-size:12px}
-.btns{display:flex;justify-content:center;gap:30px;margin:20px}
-.btn{width:60px;height:60px;border-radius:50%;border:none;font-size:30px;cursor:pointer}
-.nope{background:white;color:red} .like{background:#ff2d55;color:white}
-.nav{position:fixed;bottom:0;width:100%;background:black;display:flex;justify-content:space-around;padding:15px 0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial;background:#0a0a0a;color:white;min-height:100vh;padding-bottom:80px}
+.top{padding:15px;text-align:center;background:linear-gradient(135deg,#ff2d55,#ff8a00);position:sticky;top:0;z-index:10}
+.top h1{font-size:20px} .top p{font-size:12px;opacity:0.9;margin-top:4px}
+.filters{display:flex;gap:8px;padding:12px;overflow-x:auto;justify-content:center;background:#111}
+.filters button{padding:8px 14px;border-radius:20px;border:1px solid #333;background:#222;color:white;white-space:nowrap}
+.filters button.active{background:#ff2d55;border-color:#ff2d55}
+.card-wrap{position:relative;width:92%;max-width:380px;height:560px;margin:15px auto}
+.card{width:100%;height:100%;background:white;color:black;border-radius:24px;overflow:hidden;position:absolute;box-shadow:0 20px 60px rgba(255,45,85,0.4)}
+.card img{width:100%;height:72%;object-fit:cover}
+.info{padding:14px}
+.info h2{font-size:20px} .badge{font-size:11px;background:#ff2d55;color:white;padding:4px 8px;border-radius:8px;margin-left:6px}
+.info p{color:#666;font-size:13px;margin-top:6px}
+.btns{display:flex;justify-content:center;gap:40px;margin:20px}
+.btn{width:64px;height:64px;border-radius:50%;border:none;font-size:28px;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+.nope{background:white;color:#111;border:2px solid #eee} .like{background:#ff2d55;color:white}
+.matches{position:fixed;top:10px;right:10px;background:black;border:1px solid #ff2d55;padding:8px 12px;border-radius:20px;font-size:12px;z-index:20}
+.chat-box{display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:90%;max-width:400px;background:white;color:black;border-radius:20px;padding:15px;box-shadow:0 10px 40px rgba(0,0,0,0.5);z-index:30}
+.chat-box h3{margin-bottom:10px} .msg{padding:8px 12px;background:#f0f0f0;border-radius:12px;margin:6px 0;font-size:13px}
+.nav{position:fixed;bottom:0;width:100%;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:12px 0}
+.nav button{background:none;border:none;color:white;font-size:11px}
+.free-banner{text-align:center;padding:8px;background:#00d084;color:black;font-weight:bold;font-size:12px}
 </style>
 </head>
 <body>
-<h1>🌍 MeetAbroad - 100% FREE</h1>
-<p>No payment. Meet people abroad. Swipe free forever.</p>
-<div id="card-container"></div>
+<div class="free-banner">✅ 100% FREE FOREVER - NO PAYMENT - NO SUBSCRIPTION</div>
+<div class="top"><h1>🌍 MeetAbroad FREE</h1><p>Meet abroad - No payment - Swipe free forever</p></div>
+<div class="matches">❤️ <span id="matchCount">0</span> matches</div>
+<div class="filters">
+<button class="active" onclick="filterCountry('all')">All 🌍</button>
+<button onclick="filterCountry('NG')">Nigeria 🇳🇬</button>
+<button onclick="filterCountry('US')">USA 🇺🇸</button>
+<button onclick="filterCountry('BR')">Brazil 🇧🇷</button>
+<button onclick="filterCountry('ZA')">SA 🇿🇦</button>
+</div>
+<div class="card-wrap"><div id="card-container"></div></div>
 <div class="btns">
 <button class="btn nope" onclick="swipe('left')">✕</button>
 <button class="btn like" onclick="swipe('right')">♥</button>
 </div>
+<div class="chat-box" id="chatBox">
+<h3>💬 Chat with <span id="chatName"></span> <button onclick="closeChat()" style="float:right">✕</button></h3>
+<div id="chatMsgs"><div class="msg">You matched! Say hi - it's FREE, no payment needed! 👋</div></div>
+<input id="chatInput" placeholder="Type message - FREE..." style="width:75%;padding:10px;border-radius:10px;border:1px solid #ddd;margin-top:10px">
+<button onclick="sendMsg()" style="padding:10px 15px;background:#ff2d55;color:white;border:none;border-radius:10px">Send</button>
+</div>
+<div class="nav">
+<button>🔥 Discover</button><button onclick="document.getElementById('chatBox').style.display='block'">💬 Matches (<span id="navMatch">0</span>)</button><button>👤 Free Profile</button>
+</div>
 <script>
 const users=[
-{name:"Amara, 24",country:"🇳🇬 Nigeria",bio:"Love travel & music",img:"https://images.unsplash.com/photo-1531123897727-8f129e1688ce"},
-{name:"Jake, 26",country:"🇺🇸 USA",bio:"Abroad in SA, let's meet",img:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d"},
-{name:"Sofia, 23",country:"🇧🇷 Brazil",bio:"Learn English, teach Portuguese",img:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"},
-{name:"Thandi, 25",country:"🇿🇦 South Africa",bio:"Cape Town, free dating",img:"https://images.unsplash.com/photo-1524504388940-b1c1722653e1"}
+{name:"Amara, 24",c:"NG",country:"🇳🇬 Nigeria Lagos",bio:"Love travel, Afrobeat & meeting abroad - 100% real",img:"https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=600"},
+{name:"Jake, 26",c:"US",country:"🇺🇸 USA - In Cape Town",bio:"American abroad in SA, let's explore - free to meet",img:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600"},
+{name:"Sofia, 23",c:"BR",country:"🇧🇷 Brazil Rio",bio:"Teach Portuguese, learn English - no payment chat",img:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600"},
+{name:"Thandi, 25",c:"ZA",country:"🇿🇦 SA Cape Town",bio:"Cape Town girl, love abroad friends - FREE dating",img:"https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600"},
+{name:"David, 28",c:"US",country:"🇺🇸 USA Texas",bio:"Looking for serious, no games - free chat",img:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600"},
+{name:"Zanele, 22",c:"ZA",country:"🇿🇦 SA Durban",bio:"Fun, real, no fake profiles - 100% free",img:"https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600"}
 ];
-let i=0;
+let i=0, matches=0, filter='all';
 function showCard(){
-const u=users[i%users.length];
-document.getElementById('card-container').innerHTML=`<div class="card"><img src="${u.img}"><div class="info"><h2>${u.name} <span class="badge">${u.country}</span></h2><p>${u.bio}</p></div></div>`;
+let list = filter==='all' ? users : users.filter(u=>u.c===filter);
+if(list.length===0) list=users;
+let u=list[i%list.length];
+document.getElementById('card-container').innerHTML=`<div class="card"><img src="${u.img}"><div class="info"><h2>${u.name} <span class="badge">${u.country}</span></h2><p>${u.bio}</p><p style="font-size:11px;color:#ff2d55;margin-top:8px">✅ FREE - NO PAYMENT NEEDED</p></div></div>`;
+window.currentUser=u;
 }
 function swipe(dir){
-if(dir==='right'){alert('You liked '+users[i%users.length].name+'! If they like you back, you match - FREE CHAT!');}
+if(dir==='right'){matches++;document.getElementById('matchCount').innerText=matches;document.getElementById('navMatch').innerText=matches;document.getElementById('chatName').innerText=currentUser.name;document.getElementById('chatBox').style.display='block';}
 i++;showCard();
+}
+function filterCountry(code){
+filter=code;document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');i=0;showCard();
+}
+function closeChat(){document.getElementById('chatBox').style.display='none';}
+function sendMsg(){
+let inp=document.getElementById('chatInput');if(!inp.value)return;
+let div=document.createElement('div');div.className='msg';div.style.background='#ff2d55';div.style.color='white';div.style.marginLeft='20%';div.innerText=inp.value;
+document.getElementById('chatMsgs').appendChild(div);inp.value='';
+setTimeout(()=>{let r=document.createElement('div');r.className='msg';r.innerText='Nice! I would love to meet - when are you free? 😊 (This is 100% free chat)';document.getElementById('chatMsgs').appendChild(r);},1000);
 }
 showCard();
 </script>
